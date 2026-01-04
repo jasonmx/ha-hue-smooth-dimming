@@ -2,13 +2,14 @@
   "domain": "hue_dimmer",
   "name": "Philips Hue Smooth Dimmer",
   "version": "1.0.0",
+  "homeassistant": "2025.1.0",
   "config_flow": true,
   "documentation": "https://github.com/jasonmx/ha-hue-smooth-dimmer",
   "issue_tracker": "https://github.com/jasonmx/ha-hue-smooth-dimmer/issues",
   "codeowners": ["@jasonmx"],
   "dependencies": ["hue"],
   "requirements": [],
-  "integration_type": "service",
+  "integration_type": "helper",
   "iot_class": "local_push",
   "logbook": false
 }
