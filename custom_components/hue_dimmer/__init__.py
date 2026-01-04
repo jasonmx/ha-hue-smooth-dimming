@@ -182,7 +182,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
             final_bright = resolve_current_brightness(resource_id, api_bright)
             old_state = STATE_TRACKER.get(resource_id, {})
             
-            # STOP-SNAP DEFENSE: Store the aborted target
+            # Store details of the aborted transition, to enable brightness predictions during the API guard window
             STATE_TRACKER[resource_id] = {
                 "time": time.time(),
                 "bright": final_bright,
