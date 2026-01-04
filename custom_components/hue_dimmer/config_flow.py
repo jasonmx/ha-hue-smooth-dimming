@@ -1,8 +1,8 @@
 from homeassistant import config_entries
 from .const import DOMAIN
 
-class HueSmoothDimmingConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
-    """Handle a config flow for Hue Smooth Dimmer."""
+class HueDimmerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+    """Handle a config flow for Philips Hue Smooth Dimmer."""
     VERSION = 1
 
     async def async_step_user(self, user_input=None):
@@ -11,6 +11,4 @@ class HueSmoothDimmingConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             return self.async_abort(reason="single_instance_allowed")
 
         if user_input is not None:
-            return self.async_create_entry(title="Hue Smooth Dimmer", data={})
-
-        return self.async_show_form(step_id="user")
+            return self.async_create_entry(title="Philips Hue Smooth Dimmer", data={})

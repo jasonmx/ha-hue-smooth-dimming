@@ -1,5 +1,4 @@
 import time
-import asyncio
 import logging
 from homeassistant.core import ServiceCall, HomeAssistant
 from homeassistant.helpers import entity_registry as er
@@ -51,12 +50,11 @@ async def get_bridge_and_id(hass: HomeAssistant, entity_id: str):
 
 def resolve_current_brightness(resource_id, api_brightness):
     """
-    Handles 'Target Snapping', a Philips Hue quirk where the API snaps its state/brightness reporting to a
-    transition's end state when the transition starts (e.g. raise to 100% over 60s reports 100% immediately).
-    When a transition is stopped mid flight, the API takes ~10 seconds to catch up and report correctly.
-    
-    The resolver detects the catch-up window and falls back on an internal brightness prediction if the API
-    can't be trusted, to ensure rapid dim-stop-dim action sequences work smoothly.
+    Hue API reports a light's state and brightness incorrectly during a dimming transition. Correct reporting catches
+    up after ~10s.
+     
+    The resolver decides when to trust the API and when to use its own predicted brightness value, to ensure rapid
+    dim-stop-dim action sequences work smoothly.
     """
     state = STATE_TRACKER.get(resource_id)
     if not state:
@@ -65,44 +63,32 @@ def resolve_current_brightness(resource_id, api_brightness):
     now = time.time()
     elapsed = now - state["time"]
 
-    # CASE 1: Stationary (Direction is 'none')
-    if state["dir"] == "none":
-        # Check if the bridge is snapping to the target of the move we JUST stopped
-        is_target_snap = abs(api_brightness - state["target"]) < 0.5
-        
-        if is_target_snap and elapsed < STALE_BRIGHTNESS_GUARD_SECONDS:
-            _LOGGER.debug("TRACKER [%s]: Ignoring snap to aborted target %.1f%%. Staying at %.1f%%", 
-                         resource_id, api_brightness, state["bright"])
-            return state["bright"]
-            
-        # Detect manual/external overrides
-        if not is_target_snap and abs(api_brightness - state["bright"]) >= 0.5:
-            _LOGGER.info("External change detected for %s. Clearing tracker.", resource_id)
-            STATE_TRACKER.pop(resource_id, None)
-            return api_brightness
-        
-        # Guard window check for idle state
-        return state["bright"] if elapsed < STALE_BRIGHTNESS_GUARD_SECONDS else api_brightness
-
-    # CASE 2: Moving
-    is_at_target = abs(api_brightness - state["target"]) < 0.5
-    
-    if is_at_target and elapsed < STALE_BRIGHTNESS_GUARD_SECONDS:
-        change = (100.0 / state["sweep"]) * elapsed
-        if state["dir"] == "up":
-            predicted = min(state["bright"] + change, 100.0)
-        else:
-            predicted = max(state["bright"] - change, 0.0)
-        
-        _LOGGER.debug("TRACKER [%s]: Moving snap ignored. API: %.1f%%, Predicted: %.1f%%", 
-                     resource_id, api_brightness, predicted)
-        return predicted
-
-    # Cleanup if the guard window has passed
+    # If the guard window has passed, clear tracker and trust the API
     if elapsed > STALE_BRIGHTNESS_GUARD_SECONDS:
         STATE_TRACKER.pop(resource_id, None)
+        return api_brightness
 
-    return api_brightness
+    # During the guard window, we trust our stored brightness regardless of what the bridge says.
+    # CASE 1: Stationary (Direction is 'none')
+    if state["dir"] == "none":
+        _LOGGER.debug("TRACKER [%s]: Guard active (Stationary). Ignoring API %.1f%%. Staying at %.1f%%", 
+                     resource_id, api_brightness, state["bright"])
+        return state["bright"]
+
+    # CASE 2: Moving
+ 
+    # Ensure sweep is at least 0.1 to avoid Division by Zero or a -ve number
+    safe_sweep = max(state["sweep"], 0.1)
+    change = (100.0 / safe_sweep) * elapsed
+
+    if state["dir"] == "up":
+        predicted = min(state["bright"] + change, state["target"])
+    else:
+        predicted = max(state["bright"] - change, state["target"])
+    
+    _LOGGER.debug("TRACKER [%s]: Guard active (Moving). API: %.1f%%, Predicted: %.1f%%", 
+                 resource_id, api_brightness, predicted)
+    return predicted
 
 async def start_transition(bridge, resource_id, direction, sweep, limit):
     """Executes transition and stores state metadata for snap protection."""
@@ -144,7 +130,7 @@ async def start_transition(bridge, resource_id, direction, sweep, limit):
     await bridge.api.request("put", f"clip/v2/resource/light/{resource_id}", json=payload)
 
 def _prune_tracker():
-    """Cleanup helper to prevent memory leaks."""
+    """Clean up the tracker to prevent memory leaks."""
     now = time.time()
     to_delete = [
         res_id for res_id, state in STATE_TRACKER.items()
@@ -159,6 +145,7 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry):
     async def handle_raise(call: ServiceCall):
         _prune_tracker()
         sweep = float(call.data.get("sweep_time", DEFAULT_SWEEP_TIME))
+        sweep = max(sweep,0.1) # Restricts user-supplied value to +ve numbers
         limit = float(call.data.get("limit", DEFAULT_MAX_BRIGHTNESS))
         
         for entity_id in call.data.get("entity_id", []):

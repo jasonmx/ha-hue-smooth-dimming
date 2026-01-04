@@ -2,7 +2,7 @@
   "config": {
     "step": {
       "user": {
-        "title": "Hue Smooth Dimmer",
+        "title": "Philips Hue Smooth Dimmer",
         "description": "Click submit to install."
       }
     },
@@ -10,7 +10,7 @@
       "single_instance_allowed": "Only a single instance of Hue Smooth Dimmer is needed."
     },
     "create_entry": {
-      "default": "Success! You can now use Raise, Lower and Stop actions in your automations."
+      "default": "Success! You can now use hue_dimmer.raise, .lower and .stop actions in your automations."
     }
   }
 }

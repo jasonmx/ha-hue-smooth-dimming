@@ -6,17 +6,16 @@ raise:
       domain: light
   fields:
     sweep_time:
-      name: Sweep Time
+      name: Sweep time
       description: Duration of a full 100-0% transition.
-      default: 5
       selector:
         number:
           min: 1
           max: 60
           unit_of_measurement: s
     limit:
-      name: Target Brightness
-      description: Default is 100%.
+      name: Target brightness
+      description: Transition end point (default 100%).
       selector:
         number:
           min: 1
@@ -31,17 +30,16 @@ lower:
       domain: light
   fields:
     sweep_time:
-      name: Sweep Time
+      name: Sweep time
       description: Duration of a full 0-100% transition.
-      default: 5
       selector:
         number:
           min: 1
           max: 60
           unit_of_measurement: s
     limit:
-      name: Target Brightness
-      description: Default is 0%. Use 0.2% to keep the light on.
+      name: Target brightness
+      description: Transition end point (default 0%). Choose 0.2% or more to keep a light turned on.
       selector:
         number:
           min: 0
