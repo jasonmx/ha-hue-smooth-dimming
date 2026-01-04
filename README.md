@@ -9,8 +9,8 @@ This integration eliminates the visual stuttering and network congestion caused 
 ## Key Benefits 🔅💡🔆
 
 * **Silky Smooth:** No more jumpy brightness changes or overshoots in "press to dim, release to stop" automations. Brightness transitions are predictable, continuous and visually polished, mirroring the behavior of a high-quality physical dimmer.
+* **Instant setup:** This helper piggybacks on HA's core Hue integration, so there's no fiddly post-installation setup.
 * **Network Friendly:** By sending only two Hue API commands instead of lots of small brightness steps, your home LAN and Hue meshes remain responsive and clear.
-* **One-click configuration:** This helper piggybacks on HA's core Hue integration, so there's no fiddly post-installation setup.
 
 ---
 
@@ -28,12 +28,12 @@ This integration eliminates the visual stuttering and network congestion caused 
 
 2. Click the **Download** button on the repository page.
 3. Restart Home Assistant.
-4. Go to **Settings > Devices & Services > Add Integration** and search for "Hue Smooth Dimmer".
+4. Go to **Settings > Devices & Services > Add Integration** and search for "Philips Hue Smooth Dimmer".
 
 ### Method 2: Manual
-1. Copy the `hue_smooth_dimmer` folder to your `/config/custom_components/` directory.
+1. Copy the `hue_dimmer` folder to your `/config/custom_components/` directory.
 2. **Restart Home Assistant.**
-3. Go to **Settings > Devices & Services > Add Integration** and search for "Hue Smooth Dimmer".
+3. Go to **Settings > Devices & Services > Add Integration** and search for "Philips Hue Smooth Dimmer".
 
 ---
 
@@ -41,51 +41,65 @@ This integration eliminates the visual stuttering and network congestion caused 
 
 After installation, you'll find 3 new services in the automation Actions list. You can also use them in Developer Tools -> Actions. 
 
-### `hue_smooth_dimmer.raise`
-Initiates a smooth transition toward a higher brightness level.
+### `hue_dimmer.raise`
+Starts increasing the brightness.
 
 | Field | Default | Description |
 | :--- | :--- | :--- |
 | `target` | (Required) | The Hue light(s) or group(s) to control. |
 | `sweep_time` | `5` | Seconds for a full 0-100% transition. |
-| `limit` | `100` | Brightness limit (e.g., stop at 80%). |
+| `limit` | `100` | Stop transition at this brightness (default 100%). |
 
-### `hue_smooth_dimmer.lower`
-Initiates a smooth transition toward a lower brightness level, and turns off at 0%.
+### `hue_dimmer.lower`
+Starts decreasing the brightness, and turns off at 0%.
 
 | Field | Default | Description |
 | :--- | :--- | :--- |
 | `target` | (Required) | The Hue light(s) or group(s) to control. |
-| `sweep_time` | `5` | Seconds for a full 100-0% transition (s). |
-| `limit` | `0` | Brightness limit. Use 0.2% to keep a Hue bulb turned on. |
+| `sweep_time` | `5` | Seconds for a full 100-0% transition. |
+| `limit` | `0` | Stop transition at this brightness (default 0%). Use at least 0.2% to keep a light turned on. |
 
 > [!TIP]
-> The minimum brighness of Hue bulbs is 0.2% for regular bulbs and 2% for Essential bulbs. Source: [this blog post](https://hueblog.com/2025/09/18/new-hue-bulbs-cannot-be-dimmed-any-lower/).
+> Hue's minimum supported brightness is 0.2% for regular bulbs and 2.0% for Essential bulbs. Source: [this blog post](https://hueblog.com/2025/09/18/new-hue-bulbs-cannot-be-dimmed-any-lower/).
 
-### `hue_smooth_dimmer.stop`
+### `hue_dimmer.stop`
 Stops an active transition.
 
 ---
 
 ## Example Usage
 
-To dim your Hue lights smoothly with a button remote like the Aqara Opple or IKEA TRÅDFRI:
+To dim your Hue lights smoothly with a two-button remote:
 
-**Automation: Start Dimming Up on Button Hold**
 ```yaml
-action:
-  - service: hue_smooth_dimmer.raise
-    target:
-      entity_id: light.living_room
-```
-
-**Automation: Stop Dimming on Button Release**
-```yaml
-action:
-  - service: hue_smooth_dimmer.stop
-    target:
-      entity_id: light.living_room
+actions:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id:
+              - long_press_left
+        sequence:
+          - action: hue_dimmer.lower
+            target:
+              entity_id: light.living_room
+      - conditions:
+          - condition: trigger
+            id:
+              - long_press_right
+        sequence:
+          - action: hue_dimmer.raise
+            target:
+              entity_id: light.living_room
+      - conditions:
+          - condition: trigger
+            id:
+              - release_left
+              - release_right
+        sequence:
+          - action: hue_dimmer.stop
+            target:
+              entity_id: light.living_room
 ```
 
 > [!TIP]
-> For the best performance and perfect synchronization, target **Hue Groups** rather than HA groups or multiple bulbs. This allows the Hue Bridge to send a single Zigbee broadcast, ensuring every light starts and stops at the same moment.
+> To synchronize dimming perfectly across multiple lights, target **Hue Groups** rather than HA groups or multiple individual lights. This allows the Hue Bridge to send a single Zigbee broadcast, ensuring all the lights start and stop together.

@@ -1,32 +1,19 @@
-name: Validate Integration
+name: Validate
 
 on:
   push:
-    branches:
-      - main
   pull_request:
-    branches:
-      - main
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions: {}
 
 jobs:
-  validate:
-    runs-on: ubuntu-latest
+  validate-hacs:
+    runs-on: "ubuntu-latest"
     steps:
-      - name: Checkout Code
-        uses: actions/checkout@v4
-
-      - name: Verify Manifest and Structure
-        run: |
-          # 1. Check if required files exist
-          test -f custom_components/hue_smooth_dimmer/manifest.json || (echo "Missing manifest.json" && exit 1)
-          test -f custom_components/hue_smooth_dimmer/services.yaml || (echo "Missing services.yaml" && exit 1)
-          
-          # 2. Validate JSON syntax
-          cat custom_components/hue_smooth_dimmer/manifest.json | jq '.'
-          
-          # 3. Check for the 'config_flow' key we added earlier
-          grep -q '"config_flow": true' custom_components/hue_smooth_dimmer/manifest.json || (echo "Manifest missing config_flow: true" && exit 1)
-
-      - name: Check for Python Syntax Errors
-        run: |
-          python3 -m py_compile custom_components/hue_smooth_dimmer/*.py
+      - name: HACS validation
+        uses: "hacs/action@main"
+        with:
+          category: "integration"

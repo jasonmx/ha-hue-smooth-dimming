@@ -41,7 +41,7 @@ lower:
           unit_of_measurement: s
     limit:
       name: Target Brightness
-      description: Default is 0%. Use 0.2% to keep the light on.
+      description: Default is 0%. Use 0.2% to keep a Hue light on.
       selector:
         number:
           min: 0
