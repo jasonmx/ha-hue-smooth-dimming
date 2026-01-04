@@ -1,7 +1,7 @@
 from homeassistant import config_entries
 from .const import DOMAIN
 
-class HueSmoothDimmerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
+class HueDimmerConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Hue Smooth Dimmer."""
     VERSION = 1
 

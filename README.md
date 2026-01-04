@@ -2,21 +2,21 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 
-Dim your Hue bulbs smoothly like a pro in automations and with non-Hue buttons.
+Dim your Hue bulbs smoothly in automations.
 
-This integration eliminates the visual stuttering and network congestion caused by traditional "stepped" dimming loops, by leveraging the Philips Hue V2 API's native dimming commands.
+This integration eliminates the visual stuttering and network congestion caused by traditional "stepped" dimming loops, by using the Philips Hue V2 API's native dimming commands.
 
 ## Key Benefits 🔅💡🔆
 
 * **Silky Smooth:** No more jumpy brightness changes or overshoots in "press to dim, release to stop" automations. Brightness transitions are predictable, continuous and visually polished, mirroring the behavior of a high-quality physical dimmer.
-* **Instant setup:** This helper piggybacks on HA's core Hue integration, so there's no fiddly post-installation setup.
 * **Network Friendly:** By sending only two Hue API commands instead of lots of small brightness steps, your home LAN and Hue meshes remain responsive and clear.
+* **Zero setup:** This helper works instantly with Hue lights already added via the core Hue integration.
 
 ---
 
 ## Requirements:
 * **Hardware:** Philips Hue Bridge V2. Legacy V1 bridges are not supported.
-* **[Philips Hue integration](https://www.home-assistant.io/integrations/hue)** installed.
+* **[Philips Hue core integration](https://www.home-assistant.io/integrations/hue)**.
 
 ## Installation
 
@@ -60,7 +60,7 @@ Starts decreasing the brightness, and turns off at 0%.
 | `limit` | `0` | Stop transition at this brightness (default 0%). Use at least 0.2% to keep a light turned on. |
 
 > [!TIP]
-> Hue's minimum supported brightness is 0.2% for regular bulbs and 2.0% for Essential bulbs. Source: [this blog post](https://hueblog.com/2025/09/18/new-hue-bulbs-cannot-be-dimmed-any-lower/).
+> Hue's minimum supported brightness is 0.2% for regular bulbs and 2.0% for Essential bulbs. Source: [Hueblog post](https://hueblog.com/2025/09/18/new-hue-bulbs-cannot-be-dimmed-any-lower/).
 
 ### `hue_dimmer.stop`
 Stops an active transition.
@@ -102,4 +102,4 @@ actions:
 ```
 
 > [!TIP]
-> To synchronize dimming perfectly across multiple lights, target **Hue Groups** rather than HA groups or multiple individual lights. This allows the Hue Bridge to send a single Zigbee broadcast, ensuring all the lights start and stop together.
+> To synchronize dimming perfectly across multiple lights, target **Hue Groups** rather than HA groups or individual lights. This allows the Hue Bridge to send a single Zigbee broadcast, ensuring all the lights start and stop together.
