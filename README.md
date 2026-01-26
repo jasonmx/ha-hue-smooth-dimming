@@ -2,15 +2,15 @@
 
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/hacs/integration)
 
-Dim your Hue bulbs smoothly in automations.
+Dim your Hue bulbs smoothly in "press to dim, release to stop" automations.
 
-This integration eliminates the visual stuttering and network congestion caused by traditional "stepped" dimming loops, by leveraging the Philips Hue V2 API's native dimming commands.
+This integration eliminates the visual stuttering caused by "stepped" dimming loops, using native dimming methods in the Philips Hue V2 API.
 
 ## Key Benefits 🔅💡🔆
 
-* **Silky Smooth:** No more jumpy brightness changes or overshoots in "press to dim, release to stop" automations. Brightness transitions are predictable, continuous and visually polished, mirroring the behavior of a high-quality physical dimmer.
-* **Instant setup:** The integration works the lights you've already set up in the core Hue integration. 
-* **Network Friendly:** By sending only two Hue API commands instead of lots of small brightness steps, your home LAN and Hue meshes remain responsive and clear.
+* **Silky Smooth:** No more jumpy brightness changes or overshoots in "press to dim" automations. Brightness transitions are continuous, predictable and polished, mirroring the behavior of a high-quality physical dimmer.
+* **Instant setup:** The integration works with the lights you've already added to the core HA Hue integration. 
+* **Network Friendly:** With less chatter between HA and your lights, your home network and Hue mesh remain responsive and clear.
 
 ---
 
