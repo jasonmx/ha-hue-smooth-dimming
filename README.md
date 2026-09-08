@@ -6,8 +6,6 @@ This integration extends the core Philips Hue integration and lets you:
 * Use third-party buttons to dim your Hue lights smoothly.
 * Set brightness, color and color temp while lights are off.
 
-> **Requires a Philips Hue Bridge (V2 or Pro).** All actions go through the bridge's CLIP v2 API via the core Philips Hue integration. Hue bulbs paired directly to Zigbee2MQTT, ZHA or deCONZ (no bridge) are not supported.
-
 ## How It Helps You 🔅💡🔆
 
 * **Silky Smooth:** Dimming is continuous and precise. No more jittery repeat loops and dimming overshoots.
