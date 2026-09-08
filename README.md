@@ -6,6 +6,8 @@ This integration extends the core Philips Hue integration and lets you:
 * Use third-party buttons to dim your Hue lights smoothly.
 * Set brightness, color and color temp while lights are off.
 
+> **Requires a Philips Hue Bridge (V2 or Pro).** All actions go through the bridge's CLIP v2 API via the core Philips Hue integration. Hue bulbs paired directly to Zigbee2MQTT, ZHA or deCONZ (no bridge) are not supported.
+
 ## How It Helps You 🔅💡🔆
 
 * **Silky Smooth:** Dimming is continuous and precise. No more jittery repeat loops and dimming overshoots.
@@ -15,8 +17,9 @@ This integration extends the core Philips Hue integration and lets you:
 ## Get Started
 
 ### Requirements
-* **[Philips Hue integration](https://www.home-assistant.io/integrations/hue)**
 * Philips Hue Bridge V2 or Pro (V3)
+* **[Philips Hue integration](https://www.home-assistant.io/integrations/hue)** set up and connected to that bridge
+* Not supported: Hue bulbs paired directly to Zigbee2MQTT, ZHA or deCONZ without a bridge
 
 ### Install from HACS
 1. Open the Philips Hue Smooth Dimmer HACS repository
