@@ -130,8 +130,6 @@ max: 10
 
 If you add more than 10 lights, increase "max: 10" accordingly.
 
-</details>
-
 ***
 
 ## Uninstall

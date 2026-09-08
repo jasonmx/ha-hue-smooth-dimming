@@ -414,7 +414,7 @@ async def _handle_get_attributes(hass: HomeAssistant, call: ServiceCall) -> Serv
         if color_temp_kelvin is not None:
             attrs["color_temp_kelvin"] = color_temp_kelvin
         if color_xy is not None:
-            attrs["color_xy"] = list(color_xy)
+            attrs["xy_color"] = list(color_xy)
             attrs["rgb_color"] = list(rgb)
             attrs["hs_color"] = list(hs)
         result[entity_id] = attrs
