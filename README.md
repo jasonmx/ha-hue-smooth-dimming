@@ -86,7 +86,7 @@ buttons_released:
 | `hs_color` | Color as `[hue, saturation]` (0–360, 0–100) |
 | `xy_color` | Color as `[x, y]` |
 
-> **Breaking change:** the `get_attributes` response field `color_xy` has been renamed to `xy_color`, matching `set_attributes` and Home Assistant's own attribute name. Update any templates that read `color_xy`.
+> **Breaking change:** the `get_attributes` response field `color_xy` is renamed to `xy_color`, for naming consistency with Home Assistant. Replace `color_xy` with `xy_color` in your automations.
 
 
 #### GUI Automation Example: When lights turn off for an hour, set brightness for next turn-on
