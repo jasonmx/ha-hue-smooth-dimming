@@ -86,6 +86,8 @@ buttons_released:
 | `hs_color` | Color as `[hue, saturation]` (0–360, 0–100) |
 | `xy_color` | Color as `[x, y]` |
 
+> **Breaking change:** the `get_attributes` response field `color_xy` is renamed to `xy_color`, for naming consistency with Home Assistant. Replace `color_xy` with `xy_color` in your automations.
+
 
 #### GUI Automation Example: When lights turn off for an hour, set brightness for next turn-on
 
@@ -129,8 +131,6 @@ max: 10
 ```
 
 If you add more than 10 lights, increase "max: 10" accordingly.
-
-</details>
 
 ***
 
